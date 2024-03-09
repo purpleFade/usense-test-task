@@ -39,7 +39,9 @@ export class PasswordStrengthComponent implements OnInit {
     );
 
     if (this.password.length < 8) {
+      complexity = 1;
       this.strengthColors = ['red', 'red', 'red'];
+      this.feedback.push('Needs at least 8 characters.');
     }
 
     this.setStrength(complexity);
