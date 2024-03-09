@@ -31,18 +31,19 @@ export class PasswordStrengthComponent implements OnInit {
       return;
     }
 
-    let complexity = this.calculateComplexity(
+    if (this.password.length < 8) {
+      this.strength = 'weak';
+      this.strengthColors = ['red', 'red', 'red'];
+      this.feedback.push('Needs at least 8 characters.');
+      return
+    }
+
+    const complexity = this.calculateComplexity(
       hasUpperCase,
       hasLowerCase,
       hasNumbers,
       hasSymbols
     );
-
-    if (this.password.length < 8) {
-      complexity = 1;
-      this.strengthColors = ['red', 'red', 'red'];
-      this.feedback.push('Needs at least 8 characters.');
-    }
 
     this.setStrength(complexity);
     this.setFeedback(
@@ -61,28 +62,37 @@ export class PasswordStrengthComponent implements OnInit {
     hasSymbols: boolean
   ): number {
     let complexity = 0;
-    complexity += hasUpperCase ? 1 : 0;
-    complexity += hasLowerCase ? 1 : 0;
-    complexity += hasNumbers ? 1 : 0;
-    complexity += hasSymbols ? 1 : 0;
+
+    if (hasUpperCase || hasLowerCase || hasNumbers || hasSymbols) {
+      complexity = 1;
+    }
+    if (
+      hasUpperCase ||
+      (hasLowerCase && hasSymbols) ||
+      hasUpperCase ||
+      (hasLowerCase && hasNumbers) ||
+      (hasNumbers && hasSymbols)
+    ) {
+      complexity = 2;
+    }
+    if (hasUpperCase && hasLowerCase && hasNumbers && hasSymbols) {
+      complexity = 3;
+    }
+
     return complexity;
   }
 
   setStrength(complexity: number): void {
     switch (complexity) {
       case 1:
-        this.strength = 'weak';
-        this.strengthColors = ['red', 'red', 'red'];
-        break;
-      case 2:
         this.strength = 'easy';
         this.strengthColors = ['red', 'gray', 'gray'];
         break;
-      case 3:
+      case 2:
         this.strength = 'medium';
         this.strengthColors = ['yellow', 'yellow', 'gray'];
         break;
-      case 4:
+      case 3:
         this.strength = 'strong';
         this.strengthColors = ['green', 'green', 'green'];
         break;
@@ -99,21 +109,17 @@ export class PasswordStrengthComponent implements OnInit {
     hasNumbers: boolean,
     hasSymbols: boolean
   ): void {
-    if (complexity === 0) {
-      this.feedback.push('Password is too weak.');
-    } else {
-      if (!hasUpperCase) {
-        this.feedback.push('Needs at least one uppercase letter.');
-      }
-      if (!hasLowerCase) {
-        this.feedback.push('Needs at least one lowercase letter.');
-      }
-      if (!hasNumbers) {
-        this.feedback.push('Needs at least one number.');
-      }
-      if (!hasSymbols) {
-        this.feedback.push('Needs at least one special character.');
-      }
+    if (!hasUpperCase) {
+      this.feedback.push('Needs at least one uppercase letter.');
+    }
+    if (!hasLowerCase) {
+      this.feedback.push('Needs at least one lowercase letter.');
+    }
+    if (!hasNumbers) {
+      this.feedback.push('Needs at least one number.');
+    }
+    if (!hasSymbols) {
+      this.feedback.push('Needs at least one special character.');
     }
   }
 }
