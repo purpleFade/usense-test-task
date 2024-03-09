@@ -10,5 +10,7 @@ main {
   background-image: url('./assets/blurry-gradient-haikei.svg');
   background-size: cover;
   background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
   min-height: 100vh;
 }
