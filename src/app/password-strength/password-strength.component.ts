@@ -31,12 +31,16 @@ export class PasswordStrengthComponent implements OnInit {
       return;
     }
 
-    const complexity = this.calculateComplexity(
+    let complexity = this.calculateComplexity(
       hasUpperCase,
       hasLowerCase,
       hasNumbers,
       hasSymbols
     );
+
+    if (this.password.length < 8) {
+      this.strengthColors = ['red', 'red', 'red'];
+    }
 
     this.setStrength(complexity);
     this.setFeedback(
@@ -65,14 +69,17 @@ export class PasswordStrengthComponent implements OnInit {
   setStrength(complexity: number): void {
     switch (complexity) {
       case 1:
+        this.strength = 'weak';
+        this.strengthColors = ['red', 'red', 'red'];
+        break;
+      case 2:
         this.strength = 'easy';
         this.strengthColors = ['red', 'gray', 'gray'];
         break;
-      case 2:
+      case 3:
         this.strength = 'medium';
         this.strengthColors = ['yellow', 'yellow', 'gray'];
         break;
-      case 3:
       case 4:
         this.strength = 'strong';
         this.strengthColors = ['green', 'green', 'green'];
